@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String   @db.Text
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Product Product[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ProductVariation ProductVariation[]
+  User             User               @relation(fields: [userId], references: [id])
+  userId           String
+}
+
+model ProductVariation {
+  id         String   @id @default(uuid())
+  validUntil DateTime
+  buyValue   Decimal  @db.Decimal()
+
+  StockMovement        StockMovement[]
+  SaleProductVariation SaleProductVariation[]
+  Product              Product                @relation(fields: [productId], references: [id])
+  productId            String
+}
+
+model StockMovement {
+  id                 String            @id @default(uuid())
+  type               StockMovementType
+  quantity           Int               @db.Integer()
+  createdAt          DateTime          @default(now())
+  ProductVariation   ProductVariation? @relation(fields: [productVariationId], references: [id])
+  productVariationId String?
+}
+
+model SaleProductVariation {
+  id        String  @id @default(uuid())
+  quantity  Int     @db.Integer()
+  unitPrice Decimal @db.Decimal()
+
+  ProductVariation   ProductVariation? @relation(fields: [productVariationId], references: [id])
+  productVariationId String?
+  Sale               Sale?             @relation(fields: [saleId], references: [id])
+  saleId             String?
+}
+
+model Sale {
+  id String @id @default(uuid())
+
+  SaleProductVariation SaleProductVariation[]
+}
+
+enum StockMovementType {
+  INBOUND
+  OUTBOUND
+}
