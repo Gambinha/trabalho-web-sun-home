@@ -7,6 +7,9 @@ import { PrismaModule } from './core/prisma/prisma.module';
 import { AuthModule } from './features/auth/auth.module';
 import { UserModule } from './features/user/user.module';
 import 'dotenv/config';
+import { ProductModule } from './features/product/product.module';
+import { ProductVariationModule } from './features/product-variation/product-variation.module';
+import { SalesModule } from './features/sales/sales.module';
 
 @Module({
   imports: [
@@ -17,6 +20,9 @@ import 'dotenv/config';
     ConfigModule,
     UserModule,
     AuthModule,
+    ProductModule,
+    ProductVariationModule,
+    SalesModule,
   ],
   controllers: [],
   providers: [

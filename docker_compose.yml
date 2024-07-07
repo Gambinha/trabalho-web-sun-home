@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgresdb:
+    image: postgres:16-bullseye
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: gambinha
+      POSTGRES_DB: sunhome
+    volumes:
+      - postgresdb-data:/var/lib/postgresql/data
+
+volumes:
+  postgresdb-data:

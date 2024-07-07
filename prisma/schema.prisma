@@ -21,6 +21,7 @@ model User {
 model Product {
   id          String   @id @default(uuid())
   description String   @db.Text
+  price       Decimal  @db.Decimal()
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -30,9 +31,11 @@ model Product {
 }
 
 model ProductVariation {
-  id         String   @id @default(uuid())
-  validUntil DateTime
-  buyValue   Decimal  @db.Decimal()
+  id          String   @id @default(uuid())
+  description String   @db.Text
+  validUntil  DateTime
+  price       Decimal  @db.Decimal()
+  buyValue    Decimal  @db.Decimal()
 
   StockMovement        StockMovement[]
   SaleProductVariation SaleProductVariation[]
@@ -61,7 +64,8 @@ model SaleProductVariation {
 }
 
 model Sale {
-  id String @id @default(uuid())
+  id         String @id @default(uuid())
+  clientName String @db.Text
 
   SaleProductVariation SaleProductVariation[]
 }
