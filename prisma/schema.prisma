@@ -45,7 +45,7 @@ model ProductVariation {
 
 model StockMovement {
   id                 String            @id @default(uuid())
-  type               StockMovementType
+  type                StockMovementType
   quantity           Int               @db.Integer()
   createdAt          DateTime          @default(now())
   ProductVariation   ProductVariation? @relation(fields: [productVariationId], references: [id])
@@ -64,8 +64,9 @@ model SaleProductVariation {
 }
 
 model Sale {
-  id         String @id @default(uuid())
-  clientName String @db.Text
+  id         String   @id @default(uuid())
+  clientName String   @db.Text
+  createdAt  DateTime @default(now())
 
   SaleProductVariation SaleProductVariation[]
 }

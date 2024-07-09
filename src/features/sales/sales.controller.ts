@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import {
@@ -24,6 +24,15 @@ export class SalesController {
   @Get()
   findAll() {
     return this.salesService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Buscar lucro em determinado período' })
+  @Get('/profit')
+  getProfit(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.salesService.getProfit(new Date(startDate), new Date(endDate));
   }
 
   @ApiOperation({ summary: 'Buscar detalhes da venda' })

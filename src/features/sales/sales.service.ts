@@ -110,4 +110,56 @@ export class SalesService {
 
     return currentStock >= buyQuantity;
   }
+
+  async getProfit(startDate: Date, endDate: Date) {
+    // Calcula o faturamento total
+    const sales = await this.prisma.saleProductVariation.findMany({
+      where: {
+        Sale: {
+          createdAt: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      },
+      select: {
+        quantity: true,
+        unitPrice: true,
+      },
+    });
+
+    const totalRevenue = sales.reduce(
+      (sum, sale) => sum + sale.quantity * Number(sale.unitPrice),
+      0,
+    );
+
+    // Calcula as despesas totais com base nos movimentos de estoque INBOUND
+    const stockMovements = await this.prisma.stockMovement.findMany({
+      where: {
+        type: 'INBOUND',
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        quantity: true,
+        ProductVariation: {
+          select: {
+            buyValue: true,
+          },
+        },
+      },
+    });
+
+    const totalExpenses = stockMovements.reduce(
+      (sum, movement) =>
+        sum + movement.quantity * Number(movement.ProductVariation.buyValue),
+      0,
+    );
+
+    const profit = totalRevenue - totalExpenses;
+
+    return profit;
+  }
 }
